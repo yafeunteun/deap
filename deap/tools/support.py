@@ -507,6 +507,7 @@ class HallOfFame(object):
         self.keys = list()
         self.items = list()
         self.similar = similar
+        self.observers = list()
     
     def update(self, population):
         """Update the hall of fame with the *population* by replacing the
@@ -532,9 +533,12 @@ class HallOfFame(object):
                 else:
                     # The individual is unique and strictly better than
                     # the worst
+                    # notify all observers when inserted
                     if len(self) >= self.maxsize:
                         self.remove(-1)
                     self.insert(ind)
+                    for observer in self.observers:
+                        observer.notify(self)
     
     def insert(self, item):
         """Insert a new individual in the hall of fame using the
@@ -566,6 +570,16 @@ class HallOfFame(object):
         del self.items[:]
         del self.keys[:]
 
+    def register_observer(self, observer):
+        self.observers.append(observer)
+        
+    def unregister_observer(self, observer):
+        self.observers.remove(observer)
+    
+    def notify_observers(self):
+        for observer in self.observers:
+            observer.notify(self)
+        
     def __len__(self):
         return len(self.items)
 
