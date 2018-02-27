@@ -537,8 +537,7 @@ class HallOfFame(object):
                     if len(self) >= self.maxsize:
                         self.remove(-1)
                     self.insert(ind)
-                    for observer in self.observers:
-                        observer.notify(self)
+                    self.notify_observers()
     
     def insert(self, item):
         """Insert a new individual in the hall of fame using the
